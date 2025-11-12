@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#204ce5">
+    <meta name="description" content="Calculateur de rentabilité pour investissement immobilier locatif">
+    <title>Calculette de Rentabilité Locative</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- iOS Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Rentabilité">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .calculator-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: #204ce5;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 40px;
+        }
+
+        .input-section, .results-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        input[type="number"], input[type="range"] {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #204ce5;
+        }
+
+        input[type="range"] {
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .range-value {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .range-value span {
+            font-weight: 600;
+            color: #204ce5;
+        }
+
+        .results-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .results-section h2 {
+            color: #204ce5;
+            font-size: 22px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .result-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #204ce5;
+            margin-bottom: 15px;
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #204ce5;
+        }
+
+        .result-value.highlight {
+            font-size: 32px;
+            color: #28a745;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #004085;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .result-value.highlight {
+                font-size: 28px;
+            }
+        }
+
+        .input-suffix {
+            position: relative;
+        }
+
+        .input-with-suffix {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .suffix {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .calculate-btn {
+            background: #204ce5;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            background: #1a3db8;
+            transform: translateY(-2px);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="header">
+            <h1>Calculette de Rentabilité Locative</h1>
+            <p>Estimez la rentabilité de votre investissement immobilier</p>
+        </div>
+
+        <div class="content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="coutTotal">Coût total du projet (€)</label>
+                    <input type="number" id="coutTotal" placeholder="250000" value="250000" min="0" step="1000">
+                    <small style="color: #666;">Acquisition + travaux</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="loyerMensuel">Loyer mensuel brut (€)</label>
+                    <input type="number" id="loyerMensuel" placeholder="1200" value="1200" min="0" step="50">
+                </div>
+
+                <div class="form-group">
+                    <label for="montantEmprunte">Montant emprunté (€)</label>
+                    <input type="number" id="montantEmprunte" placeholder="200000" value="200000" min="0" step="1000">
+                </div>
+
+                <div class="form-group">
+                    <label for="tauxInteret">Taux d'intérêt - TAEG (%)</label>
+                    <input type="number" id="tauxInteret" placeholder="3.5" value="3.5" min="0" max="20" step="0.1">
+                </div>
+
+                <div class="form-group">
+                    <label for="dureePret">Durée du prêt (années)</label>
+                    <input type="range" id="dureePret" min="5" max="30" value="20" step="1">
+                    <div class="range-value">
+                        <span>5 ans</span>
+                        <span id="dureeValue">20 ans</span>
+                        <span>30 ans</span>
+                    </div>
+                </div>
+
+                <button class="calculate-btn" id="calculateBtn">Calculer</button>
+            </div>
+
+            <div class="results-section">
+                <h2>Résultats</h2>
+
+                <div class="result-item">
+                    <div class="result-label">Mensualités du prêt</div>
+                    <div class="result-value" id="mensualites">0 €</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">Coût total du crédit</div>
+                    <div class="result-value" id="coutCredit">0 €</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-label">Rentabilité brute</div>
+                    <div class="result-value highlight" id="rentabilite">0%</div>
+                </div>
+
+                <div class="info-box">
+                    💡 <strong>Info :</strong> Une rentabilité brute de 6% est généralement considérée comme correcte en France.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get all input elements
+        const coutTotal = document.getElementById('coutTotal');
+        const loyerMensuel = document.getElementById('loyerMensuel');
+        const montantEmprunte = document.getElementById('montantEmprunte');
+        const tauxInteret = document.getElementById('tauxInteret');
+        const dureePret = document.getElementById('dureePret');
+        const dureeValue = document.getElementById('dureeValue');
+
+        // Get result elements
+        const mensualitesEl = document.getElementById('mensualites');
+        const coutCreditEl = document.getElementById('coutCredit');
+        const rentabiliteEl = document.getElementById('rentabilite');
+
+        // Update slider display only (no calculation)
+        dureePret.addEventListener('input', function() {
+            dureeValue.textContent = this.value + ' ans';
+        });
+
+        // Add click event to calculate button
+        const calculateBtn = document.getElementById('calculateBtn');
+        calculateBtn.addEventListener('click', calculate);
+
+        // Calculate function
+        function calculate() {
+            // Get values
+            const cout = parseFloat(coutTotal.value) || 0;
+            const loyer = parseFloat(loyerMensuel.value) || 0;
+            const montant = parseFloat(montantEmprunte.value) || 0;
+            const taux = parseFloat(tauxInteret.value) || 0;
+            const duree = parseInt(dureePret.value) || 0;
+
+            // Calculate gross rental yield
+            const loyerAnnuel = loyer * 12;
+            const rentabilite = cout > 0 ? (loyerAnnuel / cout) * 100 : 0;
+
+            // Calculate monthly payment using the standard loan formula
+            // M = P * [r(1 + r)^n] / [(1 + r)^n - 1]
+            let mensualites = 0;
+            let coutCredit = 0;
+
+            if (montant > 0 && taux > 0 && duree > 0) {
+                const tauxMensuel = (taux / 100) / 12;
+                const nombreMois = duree * 12;
+
+                mensualites = montant * (tauxMensuel * Math.pow(1 + tauxMensuel, nombreMois)) /
+                             (Math.pow(1 + tauxMensuel, nombreMois) - 1);
+
+                coutCredit = (mensualites * nombreMois) - montant;
+            }
+
+            // Update display
+            mensualitesEl.textContent = formatCurrency(mensualites);
+            coutCreditEl.textContent = formatCurrency(coutCredit);
+            rentabiliteEl.textContent = rentabilite.toFixed(2) + '%';
+
+            // Change color based on rental yield
+            if (rentabilite >= 6) {
+                rentabiliteEl.style.color = '#28a745'; // Green
+            } else if (rentabilite >= 4) {
+                rentabiliteEl.style.color = '#ffc107'; // Yellow/Orange
+            } else {
+                rentabiliteEl.style.color = '#dc3545'; // Red
+            }
+        }
+
+        // Format currency
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('fr-FR', {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value);
+        }
+
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then((registration) => {
+                        console.log('Service Worker registered:', registration);
+                    })
+                    .catch((error) => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

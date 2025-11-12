@@ -1,0 +1,24 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.log
+
+# Node modules (if added later)
+node_modules/
+
+# Build artifacts
+dist/
+build/
+
+# Converted icon (keep SVG originals)
+icon-192-converted.png
