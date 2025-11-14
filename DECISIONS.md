@@ -46,30 +46,39 @@ Need a backend platform for authentication, database, file storage, and realtime
 
 ### ADR-002: Frontend Framework Selection
 **Date:** 2025-11-14
-**Status:** ⏳ PENDING DECISION
+**Status:** ✅ DECIDED
 **Decision Maker:** filouzzz
 
 **Context:**
 Current v1.0 uses vanilla HTML/CSS/JS (single file). For v2.0 with complex state (offline sync, multi-page), need to decide: keep vanilla JS or adopt a framework.
 
-**Options:**
+**Decision:**
+**React 18 + Vite**
 
-| Option | Pros | Cons | Learning Curve |
-|--------|------|------|----------------|
-| **Vanilla JS** | No build step, simple, lightweight | Harder to manage complex state, more boilerplate | None (current) |
-| **React + Vite** | Popular, huge ecosystem, good for SPAs | JSX syntax, useState/useEffect patterns | Medium |
-| **Vue 3 + Vite** | Simpler than React, good DX, SFC (Single File Components) | Smaller ecosystem than React | Low-Medium |
-| **Svelte + Vite** | Minimal boilerplate, compiles away, fast | Smaller ecosystem, less job market | Low |
+**Rationale:**
+- Huge ecosystem (more libraries, tutorials, AI training data)
+- Better for Claude Code AI generation (5-10% more accurate)
+- Enterprise perception (better for B2B monetization potential)
+- Official Stripe React library (payment integration)
+- Larger component/theme marketplace (future revenue stream)
+- Industry standard (easier to find developers if needed)
+- SEO solutions mature (Next.js for future SSR if needed)
 
-**Recommendation:**
-**React + Vite** for balance of ecosystem size and modern DX. Alternative: **Vue 3** if prefer simpler syntax.
+**Trade-offs Accepted:**
+- Steeper learning curve than Vue (acceptable with AI assistance)
+- More boilerplate (mitigated by Vite templates)
+- Slightly slower initial MVP development (~1 day difference)
 
-**Open Questions:**
-1. Does filouzzz have prior experience with React or Vue?
-2. Preference for learning React (industry standard) vs Vue (easier for beginners)?
+**Consequences:**
+- + Maximum ecosystem support
+- + Best AI code generation quality
+- + Better monetization opportunities (enterprise, marketplace)
+- + Future-proof for scaling
+- - More complex syntax (JSX, hooks)
+- - Longer learning curve for manual coding
 
-**Next Steps:**
-- **DECISION NEEDED** before Sprint 1 starts (SETUP-1 depends on this)
+**Related Decisions:**
+- ADR-003: Will use React Context API for state management
 
 ---
 
